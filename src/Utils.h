@@ -116,6 +116,8 @@ public:
     template <typename T>
     static int findIDlast(const std::vector<T>& vec, T val) {
         int res = -1;
+        if (vec.size() == 1 && vec[0] < val)
+            res = 0;
         for (int j = 0; j < vec.size(); ++j) {
             if (vec[j] >= val) {
                 res = j - 1;

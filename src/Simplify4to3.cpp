@@ -121,11 +121,15 @@ void Simplify4to3::run()
 	{
 		SegementPair sp = Q.top();
 		Q.pop();
+		/*if (sp.gid == 169 || sp.gid == 170)
+		{
+			cout << "haha" << endl;
+		}*/
 		double cost = sp.err;
 		int index = sp.gid;
 		pair<int, int> res = global2local(index);
 		int lid = res.first, k = res.second;
-		if (sp.key != update_key[index] || (exist_list[k].sum() < 2 && components[k].is_loop) || !exist_list[k](lid))
+		if (sp.key != update_key[index] || (exist_list[k].sum() <= 2 && components[k].is_loop) || !exist_list[k](lid))
 			continue;
 		if (cost < fit_tol * 2 && num_collapse < target_num_collapse)
 		{
@@ -134,7 +138,8 @@ void Simplify4to3::run()
 
 			if (!components[k].is_loop && exist_list[k].sum() == 1)
 			{
-				int count = count_if(ids[k].row(lid).data(), ids[k].row(lid).data() + ids[k].row(lid).size(), [](int val) {return val > -1; });
+				RowVector4i te = ids[k].row(lid);
+				int count = count_if(te.data(), te.data() + te.size(), [](int val) {return val > -1; });
 				if (count == 4)
 					ids[k].row(lid) = Vector4i(ids[k](lid, 0), ids[k](lid, 1), ids[k](lid, 3), -1);
 				else if (count == 3)
